@@ -47,6 +47,10 @@ unique_ptr<Expr> Parser::parseFactor() {
             throw runtime_error("Sintax error: ')' Expected.");
         }
         return expr;
+    } else if (match(TokenType::Minus) || match(TokenType::Plus)) {
+        TokenType op = previous().type;
+        auto rgt = parseFactor();
+        return make_unique<UnaryExpr>(op, move(rgt));
     }
 
     throw runtime_error("Expected number or expression on position " + to_string(pos));

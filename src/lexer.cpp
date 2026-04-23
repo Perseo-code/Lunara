@@ -5,7 +5,7 @@ using namespace std;
 vector<Token> lexer(const string& code) {
     vector<Token> tokens;
     
-    for (int i = 0; i < code.length(); i++) {
+    for (size_t i = 0; i < code.length(); i++) {
         char c = code[i];
 
         if (isspace(c)) continue; // Ignore spaces

@@ -18,8 +18,8 @@ enum class TokenType {
 
 struct Token {
     TokenType type;
-    string value;
+    std::string value;
 };
 
 // The function that separates text in pieces
-std::vector<Token> lexer(const string& code);
+std::vector<Token> lexer(const std::string& code);

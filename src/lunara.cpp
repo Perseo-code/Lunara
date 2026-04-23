@@ -13,9 +13,18 @@ int main(int argc, char* argv[]) {
             break;
         }
         
-        vector<Token> tokens = lexer(code);
-        Parser* parser = new Parser(tokens);
-        parser->parse();
+        try {
+            vector<Token> tokens = lexer(code);
+            Parser Lparser(tokens);
+
+            unique_ptr<Expr> root = Lparser.parse();
+            if (root) {
+                double result = root->eval();
+                cout << result << endl;
+            }
+        } catch (const exception& e) {
+            cerr << "Lunara error: " << e.what() << endl;
+        }
     }
     return 0;
 }

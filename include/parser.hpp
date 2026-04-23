@@ -18,6 +18,6 @@ private:
     Token advance();
     bool match(TokenType token_type);
 public:
-    Parser(vector<Token> t) : tokens(move(t)) {}
+    Parser(std::vector<Token> t) : tokens(move(t)) {}
     std::unique_ptr<Expr> parse();  
 };
