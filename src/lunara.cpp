@@ -3,8 +3,8 @@
 #include <ast.hpp>
 using namespace std;
 
-int main() {
-    cout << "Lunara REPL C++ Version." << endl;
+int main(int argc, char* argv[]) {
+    cout << "Lunara REPL C++ Version.0.1" << endl;
     while (true) {
         cout << ">>> ";
         string code;
@@ -13,6 +13,9 @@ int main() {
             break;
         }
         
+        vector<Token> tokens = lexer(code);
+        Parser* parser = new Parser(tokens);
+        parser->parse();
     }
     return 0;
 }

@@ -29,6 +29,14 @@ vector<Token> lexer(const string& code) {
 
             tokens.push_back({OpType, op});
         }
+        else if ( c == '(' || c == ')' ) {
+            string paren(1, c);
+            TokenType ParenType;
+            if ( c == '(' ) ParenType = TokenType::LeftParen;
+            else ParenType = TokenType::RightParen;
+
+            tokens.push_back({ParenType, paren});
+        }
     }
     return tokens;
 }

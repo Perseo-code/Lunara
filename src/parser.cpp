@@ -76,7 +76,7 @@ unique_ptr<Expr> Parser::parseExpression() {
 }
 
 unique_ptr<Expr> Parser::parse() {
-    // 1. Empezamos a parsear desde el nivel superior (suma/resta)
+    // We start parsing from the highest level (+ or -)
     auto root = parseExpression();
 
     // 2. Did anything remain?
