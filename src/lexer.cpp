@@ -22,11 +22,25 @@ vector<Token> lexer(const string& code) {
             string op(1, c);
             TokenType OpType;
 
-            if ( c == '+' ) OpType = TokenType::Plus;
-            else if ( c == '-' ) OpType = TokenType::Minus;
-            else if ( c == '*' ) OpType = TokenType::Star;
-            else if ( c == '=' ) OpType = TokenType::Equal;
-            else OpType = TokenType::Slash;
+            switch (c)
+            {
+            case '+':
+                OpType = TokenType::Plus;
+                break;
+            case '-':
+                OpType = TokenType::Minus;
+                break;
+            case '*':
+                OpType = TokenType::Star;
+                break;
+            case '/':
+                OpType = TokenType::Slash;
+                break;
+            case '=':
+                OpType = TokenType::Equal;
+            default:
+                break;
+            }
 
             tokens.push_back({OpType, op});
         }

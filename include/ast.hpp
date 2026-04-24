@@ -54,3 +54,13 @@ public:
         : name(std::move(n)), value(std::move(v)) {}
     double eval() override; // Here you'll save the data in memory
 };
+
+class ExitExpr : public Expr {
+    int exit_code = 0;
+public:
+    double eval() override {
+        std::cout << "Exiting lunara..." << std::endl;
+        std::exit(exit_code);
+        return 0;
+    }
+};

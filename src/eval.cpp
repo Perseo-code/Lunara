@@ -23,7 +23,7 @@ double BinExpr::eval() {
 }
 
 double UnaryExpr::eval() {
-    double val = -right->eval();
+    double val = right->eval();
 
     if (op == TokenType::Minus) return -val;
     return val; 

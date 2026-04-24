@@ -34,23 +34,43 @@ bool Parser::isAtEnd() {
     return pos >= tokens.size();
 }
 
-unique_ptr<Expr> Parser::parseAssignment() {
+unique_ptr<Expr> Parser::parseKeywords() {
     if (match(TokenType::Var)) {
         if (!match(TokenType::Identifier)) throw runtime_error("Expected a variable name after keyword assign");
 
         string name = previous().value;
         
         if (match(TokenType::Equal)) {
-            auto value = parseAssignment();
+            auto value = parseKeywords();
             return make_unique<AssignExpr>(name, move(value));
         }
         throw runtime_error("Expected '=' on the declaration of " + name);
     }
+    
+    else if (match(TokenType::Exit)) {
+        int exit_code = 0;
+        
+        if (match(TokenType::Number)) {
+            exit_code = stoi(previous().value);
+        }
 
+        return make_unique<ExitExpr>();
+    }
     return parseExpression();
 }
 
-// Important functions
+
+
+unique_ptr<Expr> Parser::parseUnary() {
+    if (match(TokenType::Minus) || match(TokenType::Plus)) {
+        TokenType op = previous().type;
+        auto right = parseUnary();
+        return make_unique<UnaryExpr>(op, move(right));
+    }
+
+    return parseFactor();
+}
+
 unique_ptr<Expr> Parser::parseFactor() {
     if (match(TokenType::Number)) {
         return make_unique<NumberExpr>(stoi(previous().value));
@@ -60,10 +80,6 @@ unique_ptr<Expr> Parser::parseFactor() {
             throw runtime_error("Sintax error: ')' Expected.");
         }
         return expr;
-    } else if (match(TokenType::Minus) || match(TokenType::Plus)) {
-        TokenType op = previous().type;
-        auto rgt = parseFactor();
-        return make_unique<UnaryExpr>(op, move(rgt));
     } else if (match(TokenType::Identifier)) {
         return make_unique<VarExpr>(previous().value); 
     }
@@ -72,11 +88,11 @@ unique_ptr<Expr> Parser::parseFactor() {
 }
 
 unique_ptr<Expr> Parser::parseTerm() {
-    auto lft = parseFactor();
+    auto lft = parseUnary();
 
     while (match(TokenType::Slash) || match(TokenType::Star)) {
         TokenType op = previous().type;
-        auto rgt = parseFactor();
+        auto rgt = parseUnary();
         lft = make_unique<BinExpr>(op, move(lft), move(rgt));
     }
 
@@ -96,7 +112,7 @@ unique_ptr<Expr> Parser::parseExpression() {
 
 unique_ptr<Expr> Parser::parse() {
     // We start parsing from the highest level (+ or -)
-    auto root = parseAssignment();
+    auto root = parseKeywords();
 
     // 2. Did anything remain?
     // If the expression finished but there are still tokens (that are not EOF),
