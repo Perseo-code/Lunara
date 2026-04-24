@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <lunara.hpp>
 #include <lexer.hpp>
 
 // Base expression class
@@ -26,7 +26,7 @@ class BinExpr : public Expr {
     std::unique_ptr<Expr> right;
 public:
     BinExpr(TokenType o, std::unique_ptr<Expr> l, std::unique_ptr<Expr> r)
-        : op(o), left(move(l)), right(move(r)) {} 
+        : op(o), left(std::move(l)), right(std::move(r)) {} 
     double eval() override;
 };
 
@@ -35,6 +35,22 @@ class UnaryExpr : public Expr {
     std::unique_ptr<Expr> right;
 public:
     UnaryExpr(TokenType o, std::unique_ptr<Expr> r)
-        : op(o), right(move(r)) {}
+        : op(o), right(std::move(r)) {}
     double eval() override;
+};
+
+class VarExpr : public Expr {
+    std::string name;
+public:
+    VarExpr(std::string n) : name(std::move(n)) {}
+    double eval() override; // Here you'll find in the variable map
+};
+
+class AssignExpr : public Expr {
+    std::string name;
+    std::unique_ptr<Expr> value;
+public:
+    AssignExpr(std::string n, std::unique_ptr<Expr> v) 
+        : name(std::move(n)), value(std::move(v)) {}
+    double eval() override; // Here you'll save the data in memory
 };

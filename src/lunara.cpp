@@ -5,6 +5,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     cout << "Lunara REPL C++ Version.0.1" << endl;
+    memory["pi"] = 3.1415;
     while (true) {
         cout << ">>> ";
         string code;

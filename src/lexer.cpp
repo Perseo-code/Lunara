@@ -18,13 +18,14 @@ vector<Token> lexer(const string& code) {
             i--; // Adjust index
             tokens.push_back({TokenType::Number, number});
         } 
-        else if (c == '+' || c == '-' || c == '*' || c == '/') {
+        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '=') {
             string op(1, c);
             TokenType OpType;
 
             if ( c == '+' ) OpType = TokenType::Plus;
             else if ( c == '-' ) OpType = TokenType::Minus;
             else if ( c == '*' ) OpType = TokenType::Star;
+            else if ( c == '=' ) OpType = TokenType::Equal;
             else OpType = TokenType::Slash;
 
             tokens.push_back({OpType, op});
@@ -36,6 +37,19 @@ vector<Token> lexer(const string& code) {
             else ParenType = TokenType::RightParen;
 
             tokens.push_back({ParenType, paren});
+        } else if (isalpha(code[i])) {
+            string name = "";
+            while (i < code.length() && isalnum(code[i])) { // Letters or numbers
+                name += code[i];
+                i++;
+            }
+            i--; // Readjust
+
+            if (keywords.count(name)) {
+                tokens.push_back({keywords.at(name), name});
+            } else {
+                tokens.push_back({TokenType::Identifier, name});
+            }
         }
     }
     return tokens;

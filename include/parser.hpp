@@ -1,8 +1,7 @@
 #pragma once
-#include <ast.hpp>
+#include <lunara.hpp>
 #include <lexer.hpp>
-#include <vector>
-
+#include <ast.hpp>
 class Parser {
 private:
     std::vector<Token> tokens;
@@ -11,6 +10,7 @@ private:
     std::unique_ptr<Expr> parseFactor();
     std::unique_ptr<Expr> parseTerm();
     std::unique_ptr<Expr> parseExpression();
+    std::unique_ptr<Expr> parseAssignment();
     // Auxiliary functions
     const Token& peek();
     const Token& next();

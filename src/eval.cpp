@@ -1,6 +1,5 @@
 #include <ast.hpp>
-#include <stdexcept>
-#include <string>
+
 using namespace std;
 
 
@@ -28,4 +27,14 @@ double UnaryExpr::eval() {
 
     if (op == TokenType::Minus) return -val;
     return val; 
+}
+
+double VarExpr::eval() {
+    return memory[name];
+}
+
+double AssignExpr::eval() {
+    double val = value->eval();
+    memory[name] = val;
+    return val;
 }

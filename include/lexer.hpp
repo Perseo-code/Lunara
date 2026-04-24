@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cctype> // To use isdigit() or isspace()
+#include <lunara.hpp>
 
 // Define what's a token
 enum class TokenType {
@@ -13,6 +10,10 @@ enum class TokenType {
     Slash,      // Division
     LeftParen,
     RightParen,
+    Var,
+    Identifier,
+    Equal,
+    Exit,
     Eof         // End of file
 };
 
@@ -21,5 +22,9 @@ struct Token {
     std::string value;
 };
 
+static const std::map<std::string, TokenType> keywords {
+    {"exit", TokenType::Exit},
+    {"assign", TokenType::Var}
+};
 // The function that separates text in pieces
 std::vector<Token> lexer(const std::string& code);
