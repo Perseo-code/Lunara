@@ -27,7 +27,7 @@ void runFile(const string& path) {
 
             unique_ptr<Expr> root = Lparser.parse();
             if (root) {
-                double result = root->eval();
+                double result = get<double>(root->eval());
                 cout << result << endl;
             }
         } catch (const exception& e) {
@@ -48,7 +48,7 @@ void runREPL() {
 
             unique_ptr<Expr> root = Lparser.parse();
             if (root) {
-                double result = root->eval();
+                double result = get<double>(root->eval());
                 cout << result << endl;
             }
         } catch (const exception& e) {

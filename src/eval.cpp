@@ -18,7 +18,7 @@ LunaType BinExpr::eval() {
         return leftVal / rightVal;
     }
     else if (op == TokenType::Star) return leftVal * rightVal;
-
+    else if (op == TokenType::EqualEqual) return leftVal == rightVal;
     return 0.0;
 }
 

@@ -24,6 +24,7 @@ enum class TokenType {
     Var,
     Identifier,
     Equal,
+    EqualEqual,
     Exit,
     Eof         // End of file
 };
@@ -33,7 +34,7 @@ struct Token {
     std::string value;
 };
 
-std::map<std::string, TokenType> keywords {
+inline std::map<std::string, TokenType> keywords {
     {"exit", TokenType::Exit},
     {"assign", TokenType::Var},
     {"null", TokenType::Null},

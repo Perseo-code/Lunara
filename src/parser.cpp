@@ -22,19 +22,35 @@ Token Parser::advance() {
 bool Parser::match(TokenType token_type) {
     if (isAtEnd()) return false;
 
-    if (peek().type == token_type) {
+    if (check(token_type)) {
         advance();
         return true;
     }
     return false;
 }
 
+bool Parser::check(TokenType token_type) {
+    if (isAtEnd()) return false;
 
+    return peek().type == token_type;
+}
+
+Token Parser::consume(TokenType type, string message) {
+    if (check(type)) {
+        return advance();
+    }
+
+    string ErrMsg = "Error in '" + peek().value + "': " + message;
+
+    throw runtime_error(ErrMsg);
+}
 bool Parser::isAtEnd() {
     return pos >= tokens.size();
 }
 
-unique_ptr<Expr> Parser::parseKeywords() {
+
+
+ExprPtr Parser::parseKeywords() {
     if (match(TokenType::Var)) {
         if (!match(TokenType::Identifier)) throw runtime_error("Expected a variable name after keyword assign");
 
@@ -46,7 +62,7 @@ unique_ptr<Expr> Parser::parseKeywords() {
         }
         throw runtime_error("Expected '=' on the declaration of " + name);
     }
-    
+
     else if (match(TokenType::Exit)) {
         int exit_code = 0;
         
@@ -61,7 +77,7 @@ unique_ptr<Expr> Parser::parseKeywords() {
 
 
 
-unique_ptr<Expr> Parser::parseUnary() {
+ExprPtr Parser::parseUnary() {
     if (match(TokenType::Minus) || match(TokenType::Plus)) {
         TokenType op = previous().type;
         auto right = parseUnary();
@@ -71,7 +87,7 @@ unique_ptr<Expr> Parser::parseUnary() {
     return parseFactor();
 }
 
-unique_ptr<Expr> Parser::parseFactor() {
+ExprPtr Parser::parseFactor() {
     if (match(TokenType::Number)) {
         return make_unique<NumberExpr>(stoi(previous().value));
     } else if (match(TokenType::LeftParen)) {
@@ -87,7 +103,7 @@ unique_ptr<Expr> Parser::parseFactor() {
     throw runtime_error("Expected number or expression on position " + to_string(pos));
 }
 
-unique_ptr<Expr> Parser::parseTerm() {
+ExprPtr Parser::parseTerm() {
     auto lft = parseUnary();
 
     while (match(TokenType::Slash) || match(TokenType::Star)) {
@@ -99,7 +115,7 @@ unique_ptr<Expr> Parser::parseTerm() {
     return lft;
 }
 
-unique_ptr<Expr> Parser::parseExpression() {
+ExprPtr Parser::parseExpression() {
     auto lft = parseTerm();
     while (match(TokenType::Plus) || match(TokenType::Minus)) {
         TokenType op = previous().type;
@@ -110,7 +126,7 @@ unique_ptr<Expr> Parser::parseExpression() {
     return lft;
 }
 
-unique_ptr<Expr> Parser::parse() {
+ExprPtr Parser::parse() {
     // We start parsing from the highest level (+ or -)
     auto root = parseKeywords();
 
@@ -122,4 +138,9 @@ unique_ptr<Expr> Parser::parse() {
     }
 
     return root;
+}
+
+StmtPtr Parser::ifStatement() {
+    consume(TokenType::LeftParen, "Expected '(' after keyword if");
+    auto condition = 
 }
