@@ -3,13 +3,13 @@
 using namespace std;
 
 
-double NumberExpr::eval() {
-    return value;
+LunaType NumberExpr::eval() {
+    return (double)value;
 }
 
-double BinExpr::eval() {
-    double leftVal = left->eval();
-    double rightVal = right->eval();
+LunaType BinExpr::eval() {
+    double leftVal = get<double>(left->eval());
+    double rightVal = get<double>(right->eval());
 
     if (op == TokenType::Plus) return leftVal + rightVal;
     else if (op == TokenType::Minus) return leftVal - rightVal;
@@ -19,22 +19,39 @@ double BinExpr::eval() {
     }
     else if (op == TokenType::Star) return leftVal * rightVal;
 
-    return 0;
+    return 0.0;
 }
 
-double UnaryExpr::eval() {
-    double val = right->eval();
+LunaType UnaryExpr::eval() {
+    double val = get<double>(right->eval());
 
     if (op == TokenType::Minus) return -val;
     return val; 
 }
 
-double VarExpr::eval() {
+LunaType VarExpr::eval() {
     return memory[name];
 }
 
-double AssignExpr::eval() {
-    double val = value->eval();
+LunaType AssignExpr::eval() {
+    double val = get<double>(value->eval());
     memory[name] = val;
     return val;
+}
+
+void IfStmt::eval() {
+    LunaType res = condition->eval();
+
+    bool isTrue = false;
+    if (holds_alternative<bool>(res)) {
+        isTrue = get<bool>(res);
+    } else if (holds_alternative<double>(res)) {
+        isTrue = get<double>(res) != 0;
+    }
+
+    if (isTrue) {
+        thenBranch->eval();
+    } else if (elseBranch) {
+        elseBranch->eval();
+    }
 }

@@ -9,5 +9,6 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <variant>
 // Essential variables
 inline std::map<std::string, double> memory;
